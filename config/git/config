@@ -1,0 +1,64 @@
+[help]
+  autocorrect = 5
+
+[core]
+	abbrev = 8
+[color]
+	diff = auto
+	branch = auto
+	status = auto
+[log]
+	abbrevCommit = true
+[alias]
+  wdiff = diff --word-diff=color
+[pager]
+# diff = fmt --width 79 --split-only
+[diff]
+  noprefix = true
+# TODO  -b --inter-hunk-context=1
+
+[rebase]
+  autosquash = yes
+
+[rerere]
+  enabled = true
+
+[alias]
+  abandon = checkout .
+
+  # From
+  # http://stackoverflow.com/questions/1527234/finding-a-branch-point-with-git
+  branch-point = !bash -c 'diff -u <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | sed -ne \"s/^ //p\" | head -1' -
+
+  # Inspired by http://stackoverflow.com/a/9074343/1366011
+  graph = log --graph --all --format=format:'%C(yellow)%h%C(bold blue)%d%C(reset) %s %C(green)%ad'
+  # Aristotle has a similar recommendation — see if any of the differences are
+  # useful: http://nntp.perl.org/group/perl.perl5.porters/215521
+
+  set-upstream = !git branch --set-upstream-to origin/$(git symbolic-ref --short HEAD)
+  # Credit: https://zarino.co.uk/post/git-set-upstream/
+
+[push]
+  default = current
+
+[branch]
+	autosetuprebase = always
+	autosetuprmerge = true
+
+[pull]
+	rebase = preserve
+
+[merge]
+	ff = false
+	conflictstyle = diff3
+
+[transfer]
+  fsckObjects = false
+[gc]
+	autoDetach = false
+[safe]
+	directory = /usr/local
+
+# Have personal identifiers in a separate file, and include those here:
+[include]
+  path = id_config

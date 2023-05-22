@@ -1,0 +1,3 @@
+# Have generic config in one tree, and tagged config with person ID in a
+# separate one, which can be kept more private:
+DOTFILES_DIRS=~/.dotfiles" "~/.id

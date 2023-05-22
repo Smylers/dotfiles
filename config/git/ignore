@@ -1,0 +1,6 @@
+# Vim swap:
+.*.sw?
+.sw?
+
+# LibreOffice lock:
+.~lock.*#
