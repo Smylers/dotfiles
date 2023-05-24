@@ -1,0 +1,1287 @@
+" Ensure Caps Lock is working as a Compose key in X. This needs running again
+" whenever an external keyboard is connected. But most of the time that I'm
+" using it is in Vim, so simply run it every time starting Vim, to ensure it
+" does what I want. :silent to avoid the ‘hit Enter’ prompt:
+silent !setxkbmap -option compose:caps
+
+" If editing a file which doesn't have a final line-break, leave it alone.
+" Useful for editing files which have been, say, created by a Windows user, or
+" from a text area in Firefox:
+set nofixeol
+
+" Indeed, if invoked from Firefox then *don't* add a trailing line-break:
+if exists('$MOZ_APP_LAUNCHER') || exists('$MOZ_LAUNCHED_CHILD')
+  autocmd BufReadPost * set noeol
+  autocmd BufNewFile  * set noeol
+  " XXX Why isn't this working?
+endif
+
+" TODO  setf perl for t/*.t TODO  Have a QP-decode routine. TODO  Detect YAML
+" when first line starts --- #YAML TODO  Consider using autochdir=on (when
+" version >= 6.2) TODO  Also copyindent and preserveindent sound good for when
+" editing files by other people, who've but tabs in there! TODO  Take : out of
+" comments in Perl (and other things), so that a ? : thing that happens to have
+" a line starting with : doesn't wrap (with more :s). TODO  A keystroke that
+" takes a parameter and sets sts and sw to it.
+
+" TODO  Have diffs hightlight TODO et al, but only in + lines, not - or context
+" lines (to emphasize if you're about to commit something with TODO in it).
+
+" TODO  If Vim is opened on a non-existent file whose name matches
+" /(.*):([1-9]\d)*$/ then check if $1 does exist, and if so open it and go to
+" line $2.
+
+set synmaxcol=200
+" While I only want 80, and if opening somebody else's file I don't mind not
+" having syntax highlighting on characters after there, with, say, a Perl
+" program it can mess up subsequent lines if something like a closing quote
+" mark is after position 80.
+
+set eadirection=hor
+set breakindent
+set showbreak=↪
+
+xnoremap . :normal .<Enter>
+" Credit: https://bluz71.github.io/2017/05/15/vim-tips-tricks.html#make-dot-work-over-visual-line-selections
+
+" XXX Should this be xmap, not vmap?
+vnoremap , "+y
+
+set formatoptions+=a
+set autowrite
+let maplocalleader = '_'
+
+" Use secure encryption:
+if exists('&cryptmethod') " guard for Vim 7.2 and older
+  set cryptmethod=blowfish2 " TODO Fix the above, cos Blowfish2 requires 7.4.401
+endif
+
+" title is defaulting to off over SSH, so set it on unconditionally until I
+" find somewhere where it's harmful:
+set title
+" (For mosh this requires version 1.2.)
+" TODO Fix the title when running psql over Mosh (and possibly over SSH too)
+
+set formatoptions-=t
+" TODO  Have fo-=c for procmailrc
+
+" Disable irritating option that often added by distros:
+set nohlsearch
+" TODO  Check for others.
+
+" Pretend that equals isn't a valid character in filenames, so that Ctrl+X
+" Ctrl+F completion works in config files where filenames directly follow
+" equals signs:
+set isfname-==
+
+" Have line completion with just Ctrl+L; don't require Ctrl+X before it (since
+" Ctrl+L on its own doesn't do anything useful):
+inoremap <C-L> <C-X><C-L>
+
+" Avoid screen flicker when running macros:
+set lazyredraw
+
+filetype plugin indent on
+
+" Keystrokes: Moving Around
+
+" TODO  Keystrokes for inserting the date, in various formats.
+
+" Make patterns very magic by default, by putting a \v at the front of them.
+" For the :s and :g commands this can only be made to work for specific
+" delimiters (and for unexpanded versions of the commands); do it for the
+" default /, the common alternatives : and #, and the pound sign (as a last
+" resort, because it isn't in Ascii so unlikely to be in many patterns, but is
+" easily typed on UK keyboards):
+noremap / /\v
+noremap ? ?\v
+noremap :/ :/\v
+noremap :? :?\v
+noremap :s/ :s/\v
+noremap :s: :s:\v
+noremap :s# :s#\v
+let pound = nr2char(163) " pound (currency) sign
+execute 'map :s' . pound . ' :s' . pound . '\v'
+noremap :g/ :g/\v
+noremap :g: :g:\v
+noremap :g# :g#\v
+execute 'map :g' . pound . ' :g' . pound . '\v'
+unlet pound
+" (Unfortunately a side-effect of the above is that pressing : no longer
+" brings up the 'Ex' command line immediately.)
+
+" TODO  New file creation.  \np for new perl.  Maybe just \n if in Perl?  Do
+" the chmod and everything.
+
+" set hidden
+" session file
+" s: for variables local to this script that should hang around
+" v:statusmsg and v:warningmsg for feedback
+
+" :hardcopy
+
+
+" Old:
+
+set keywordprg=dict
+" even though wrap off, have this for should it be turned on (prevents
+" annoying flashing):
+set display=lastline
+set nrformats-=octal
+" This was needed when SSHing from Yahoo!:
+""highlight Normal ctermbg=7 ctermfg=0
+set confirm
+let is_bash = 1
+nnoremap <M-t> hediwbPldep
+imap <S-BS> <S-Tab>
+imap <C-L> <C-X><C-L>
+imap <S-Insert> <C-R><C-O>*
+cmap <S-Insert> <C-R><C-R>*
+nnoremap gQ Q
+nnoremap <C-CR> i<CR><C-\><C-N>
+nnoremap <C-W># <C-W>p<C-W>c
+" .vimrc
+"
+" Smylers's .vimrc
+" http://www.stripey.com/vim/
+" 
+" 2000 Jun  1: for `Vim' 5.6
+" 2000 Oct 24: linebreak option avoids wrapping in the middle of words
+" 2000 Nov 10: zn and zN mappings for searching to the centre of the screen
+" 
+" 2001 Sep 29: 2 in fo for human
+" 
+" 2002 Sep 10: syntax enable instead of on
+" 
+" This .vimrc is divided into these sections:
+" 
+" * Terminal Settings
+" * User Interface
+" * Text Formatting -- General
+" * Text Formatting -- Specific File Formats
+" * Search & Replace
+" * Spelling
+" * Keystrokes -- Moving Around
+" * Keystrokes -- Formatting
+" * Keystrokes -- Toggles
+" * Keystrokes -- Insert Mode
+" * Keystrokes -- For HTML Files
+" * `SLRN' Behaviour
+" * Functions Referred to Above
+" 
+" This file contains no control codes and no `top bit set' characters above the
+" normal Ascii range, and all lines contain a maximum of 79 characters.  With a
+" bit of luck, this should make it resilient to being uploaded, downloaded,
+" e-mailed, posted, encoded, decoded, transmitted by morse code, or whatever.
+
+
+" first clear any existing autocommands:
+autocmd!
+
+
+" * Terminal Settings
+
+" `XTerm', `RXVT', `Gnome Terminal', and `Konsole' all claim to be "xterm";
+" `KVT' claims to be "xterm-color":
+if &term =~ 'xterm'
+
+  " `Gnome Terminal' fortunately sets $COLORTERM; it needs <BkSpc> and <Del>
+  " fixing, and it has a bug which causes spurious "c"s to appear, which can be
+  " fixed by unsetting t_RV:
+  if $COLORTERM == 'gnome-terminal'
+     set t_Co=16
+"    execute 'set t_kb=' . nr2char(8)
+"    " [Char 8 is <Ctrl>+H.]
+"    fixdel
+    set t_RV=
+
+    " Make keypad numbers work.  TODO Work out whether this should be done for
+    " any other terminals, or indeed if it can be done all the time wihout any
+    " harm; also consider putting this in a loop:
+    map <Esc>On .
+    map! <Esc>On .
+    map <Esc>Op 0
+    map! <Esc>Op 0
+    map <Esc>Oq 1
+    map! <Esc>Oq 1
+    map <Esc>Or 2
+    map! <Esc>Or 2
+    map <Esc>Os 3
+    map! <Esc>Os 3
+    map <Esc>Ot 4
+    map! <Esc>Ot 4
+    map <Esc>Ou 5
+    map! <Esc>Ou 5
+    map <Esc>Ov 6
+    map! <Esc>Ov 6
+    map <Esc>Ow 7
+    map! <Esc>Ow 7
+    map <Esc>Ox 8
+    map! <Esc>Ox 8
+    map <Esc>Oy 9
+    map! <Esc>Oy 9
+
+  " `XTerm', `Konsole', and `KVT' all also need <BkSpc> and <Del> fixing;
+  " there's no easy way of distinguishing these terminals from other things
+  " that claim to be "xterm", but `RXVT' sets $COLORTERM to "rxvt" and these
+  " don't:
+  elseif $COLORTERM == ''
+    execute 'set t_kb=' . nr2char(127)
+"   execute 'set t_kb=' . nr2char(8)
+"   fixdel
+    set t_RV=
+
+  " The above won't work if an `XTerm' or `KVT' is started from within a `Gnome
+  " Terminal' or an `RXVT': the $COLORTERM setting will propagate; it's always
+  " OK with `Konsole' which explicitly sets $COLORTERM to "".
+
+  endif
+endif
+
+
+" * User Interface
+
+""let perl_extended_vars = 1
+""let perl_string_as_statement = 1
+""let perl_include_POD = 1
+let g:sql_type_default = 'pgsql'
+
+" have syntax highlighting in terminals which can display colours:
+if has('syntax') && (&t_Co > 2)
+  syntax enable
+  highlight SpellBad ctermfg=DarkRed ctermbg=NONE
+endif
+
+" have fifty lines of command-line (etc) history:
+set history=50
+" remember all of these between sessions, but only 10 search terms; also
+" remember info for 10 files, but never any on removable disks, don't remember
+" marks in files, don't rehighlight old search patterns, and only save up to
+" 100 lines of registers; including @10 in there should restrict input buffer
+" but it causes an error for me:
+set viminfo=/10,'10,r/mnt/zip,r/mnt/floppy,f0,h,\"100
+
+set sessionoptions-=blank sessionoptions+=resize,winpos
+
+" have command-line completion <Tab> (for filenames, help topics, option names)
+" first list the available options and complete the longest common part, then
+" have further <Tab>s cycle through the possibilities:
+set wildmode=list:longest,full
+
+" use "[RO]" for "[readonly]" to save space in the message line:
+set shortmess+=r
+
+" display the current mode and partially-typed commands in the status line:
+set showmode
+set showcmd
+set ruler
+" TODO  Comment rule (and investigate tweaking it)
+
+" when using list, keep tabs at their full width and display `arrows'; and make
+" non-breaking spaces grey:
+set listchars+=tab:»·,nbsp:░
+
+" have the mouse enabled all the time:
+set mouse=a
+
+" Expand folds when jumping to a line
+set foldopen+=jump
+
+" don't have files trying to override this .vimrc:
+set nomodeline
+
+
+" * Text Formatting -- General
+
+" don't make it look like there are line breaks where there aren't:
+set nowrap
+
+" Just a single space between sentences:
+set nojoinspaces
+
+" but if wrap is turned on, don't wrap in the middle of words:
+set linebreak
+
+" use indents of 2 spaces, and have them copied down lines:
+set shiftwidth=2
+set shiftround
+set expandtab
+set autoindent
+
+" normally don't automatically format `text' as it is typed, IE only do this
+" with comments, at 79 characters:
+set formatoptions-=t
+set textwidth=79
+
+" get rid of the default style of C comments, and define a style with two stars
+" at the start of `middle' rows which (looks nicer and) avoids asterisks used
+" for bullet lists being treated like C comments; then define a bullet list
+" style for single stars (like already is for hyphens):
+set comments-=s1:/*,mb:*,ex:*/
+set comments+=s:/*,mb:**,ex:*/
+set comments+=fb:*
+
+" treat lines starting with a quote mark as comments (for `Vim' files, such as
+" this very one!), and colons as well so that reformatting usenet messages from
+" `Tin' users works OK:
+set comments+=b:\"
+set comments+=n::
+
+
+" * Text Formatting -- Specific File Formats
+
+" enable filetype detection:
+"filetype on
+
+" recognize anything in my .Postponed directory as a news article, and anything
+" at all with a .txt extension as being human-language text [this clobbers the
+" `help' filetype, but that doesn't seem to prevent help from working
+" properly]:
+augroup filetype
+  autocmd BufNewFile,BufRead */.Postponed/* set filetype=mail
+
+  " for RT templates:
+  autocmd BufNewFile,BufRead */WebRT/html/* set filetype=mason
+
+  autocmd BufNewFile,BufRead */etc/bash/* set filetype=sh
+  autocmd BufNewFile,BufRead inputrc set filetype=readline
+
+  " recognize .incl as included PHP scripts:
+  autocmd BufNewFile,BufRead *.incl set filetype=php
+
+  " TODO  Investigate the 'Quanta Gold' thing of putting a light grey
+  " background under PHP bits.
+
+augroup END
+
+" in human-language files, automatically format everything at 72 chars, but
+" allow for hanging indents on numbered lists and the like:
+"autocmd FileType mail,human set formatoptions+=t2 textwidth=72 infercase
+
+" for C-like programming, have automatic indentation:
+autocmd FileType c,cpp,php,slang set cindent
+
+" for actual C (not C++) programming where comments have explicit end
+" characters, if starting a new line in the middle of a comment automatically
+" insert the comment leader characters:
+autocmd FileType c,css set formatoptions+=ro
+" TODO  Comment CSS above
+
+" TODO  Add extra Perl qq things.
+" TODO  Make comments work nicely in (at least) Perl and .vimrc.
+" TODO  Make sense of this:
+
+" for Perl and PHP programming, have things in braces indenting themselves:
+" autocmd FileType perl set smartindent
+
+let php_minlines = 200
+
+" for CSS, also have things in braces indented:
+autocmd FileType css set smartindent
+
+" for HTML, generally format text, but if a long line has been created leave it
+" alone when editing:
+autocmd FileType html set formatoptions+=tl
+
+" for both CSS and HTML, use genuine tab characters for indentation, to make
+" files a few bytes smaller:
+"autocmd FileType html,css,php set noexpandtab tabstop=2
+
+" in makefiles, don't expand tabs to spaces, since actual tab characters are
+" needed, and have indentation at 8 chars to be sure that all indents are tabs
+" (despite the mappings later):
+autocmd FileType make set noexpandtab shiftwidth=8
+
+" If a supplied filename ends with a colon and isn't found then strip it and
+" load that file instead; this allows easy pasting of the output of grep and
+" the like which often puts a colon after a filename.
+" 
+" Further, if a filename ends with a colon then a positive integer and it isn't
+" found then treat the part before the colon as the actual filename and the
+" part after as the line number; this is handy in situations like where ssh
+" complains about /home/cli/.ssh/known_hosts:631, providing both the filename
+" and line number as a single string:
+autocmd BufNewFile *:* call GuessFilename()
+
+function! GuessFilename()
+
+  let NotFound = bufname('')
+  let ColonPos = strridx(NotFound, ':')
+
+  let Filename = strpart(NotFound, 0, ColonPos)
+  let LineNum = strpart(NotFound, ColonPos + 1)
+
+  " TODO  Deal with LineNum not actually being a number
+
+  let Cmd = 'edit'
+  if LineNum
+    let Cmd = Cmd . ' +' . LineNum
+  endif
+  let Cmd = Cmd . ' ' . Filename
+  execute Cmd
+
+endfunction
+
+
+" * Search & Replace
+
+" make searches case-insensitive, unless they contain upper-case letters:
+set ignorecase
+set smartcase
+
+" show the `best match so far' as search strings are typed:
+set incsearch
+
+" Show all matches so far, not just the first, while typing, but don't leave
+" all searches highlighted afterwards:
+augroup vimrc-incsearch-highlight
+  autocmd!
+  autocmd CmdlineEnter [/\?] :set hlsearch
+  autocmd CmdlineLeave [/\?] :set nohlsearch
+augroup END
+
+" assume the /g flag on :s substitutions to replace all matches in a line:
+set gdefault
+
+" Use Ack for :grep:
+if executable('ack')
+  set grepprg=ack
+endif
+
+
+" * Spelling
+
+set spelllang=en_gb
+
+" define `Ispell' language and personal dictionary, used in several places
+" below:
+let IspellLang = 'british'
+let PersonalDict = '~/.ispell_' . IspellLang
+
+" try to avoid misspelling words in the first place -- have the insert mode
+" <Ctrl>+N/<Ctrl>+P keys perform completion on partially-typed words by
+" checking the Linux word list and the personal `Ispell' dictionary; sort out
+" case sensibly (so that words at starts of sentences can still be completed
+" with words that are in the dictionary all in lower case):
+execute 'set dictionary+=' . PersonalDict
+set dictionary+=/usr/share/dict/words
+set complete=.,w,b,k
+" set infercase -- moved to human filetype
+
+" correct my common typos without me even noticing them:
+" 2001 Aug 13: Changed to insert-mode only, so can still search for
+" typos:
+iabbrev teh the
+iabbrev taht that
+iabbrev spolier spoiler
+iabbrev Comny Conmy
+iabbrev atmoic atomic
+iabbrev occurance occurrence
+iabbrev occurrance occurrence
+iabbrev occurence occurrence
+iabbrev occurances occurrences
+iabbrev occurrances occurrences
+iabbrev occurences occurrences
+iabbrev propegate propagate
+iabbrev propegated propagated
+iabbrev explicity explicitly
+iabbrev commerical commercial
+
+" Spell checking operations are defined next.  They are all set to normal mode
+" keystrokes beginning \s but function keys are also mapped to the most common
+" ones.  The functions referred to are defined at the end of this .vimrc.
+
+" \si ("spelling interactive") saves the current file then spell checks it
+" interactively through `Ispell' and reloads the corrected version:
+execute 'nnoremap \si :w<CR>:!ispell -x -d ' . IspellLang . ' %<CR>:e<CR><CR>'
+
+" \sl ("spelling list") lists all spelling mistakes in the current buffer,
+" but excludes any in news/mail headers or in ("> ") quoted text:
+execute 'nnoremap \sl :w ! grep -v "^>" <Bar> grep -E -v "^[[:alpha:]-]+: " ' .
+  \ '<Bar> ispell -l -d ' . IspellLang . ' <Bar> sort <Bar> uniq<CR>'
+
+" \sh ("spelling highlight") highlights (in red) all misspelt words in the
+" current buffer, and also excluding the possessive forms of any valid words
+" (EG "Lizzy's" won't be highlighted if "Lizzy" is in the dictionary); with
+" mail and news messages it ignores headers and quoted text; for HTML it
+" ignores tags and only checks words that will appear, and turns off other
+" syntax highlighting to make the errors more apparent [function at end of
+" file]:
+" TODO Work out whether a 3rd <CR> is needed:
+nnoremap \sh :silent call HighlightSpellingErrors()<CR><CR>
+nmap <F9> \sh
+
+" \sc ("spelling clear") clears all highlighted misspellings; for HTML it
+" restores regular syntax highlighting:
+nnoremap \sc :if &ft == 'html' <Bar> sy on <Bar>
+  \ else <Bar> :sy clear SpellError <Bar> endif<CR>
+nmap <F10> \sc
+
+" \sa ("spelling add") adds the word at the cursor position to the personal
+" dictionary (but for possessives adds the base word, so that when the cursor
+" is on "Ceri's" only "Ceri" gets added to the dictionary), and stops
+" highlighting that word as an error (if appropriate) [function at end of
+" file]:
+nnoremap \sa :call AddWordToDictionary()<CR><CR>
+nmap <F8> \sa
+
+
+" \u opens the URL under the cursor:
+nnoremap \u :!sensible-browser '<cWORD>'<Enter><Enter>
+
+" * Keystrokes -- Moving Around
+
+" Have j and k work on screen (rather than document) lines when long lines are
+" wrapped.  This, together with \tw (see below), enables easy editing of
+" documents where each paragraph is stored as a single line -- such as those in
+" wiki textareas:
+noremap j gj
+noremap k gk
+" Look at enhancements here — counts still operating on logical lines, and
+" large counts counting as jumps: https://bluz71.github.io/2017/05/15/vim-tips-tricks.html#smarter-j-and-k-navigation
+
+" have the h and l cursor keys wrap between lines (like <Space> and <BkSpc> do
+" by default), and ~ covert case over line breaks; also have the cursor keys
+" wrap in insert mode:
+set whichwrap=h,l,~,[,]
+
+" page down with <Space> (like in `Lynx', `Mutt', `Pine', `Netscape Navigator',
+" `SLRN', `Less', and `More'); page up with - (like in `Lynx', `Mutt', `Pine'),
+" or <BkSpc> (like in `Netscape Navigator'):
+noremap <Space> <PageDown>
+noremap <BS> <PageUp>
+noremap - <PageUp>
+" [<Space> by default is like l, <BkSpc> like h, and - like k.]
+
+" scroll the window (but leaving the cursor in the same place) by a couple of
+" lines up/down with <Ins>/<Del> (like in `Lynx'):
+noremap <Ins> 2<C-Y>
+noremap <Del> 2<C-E>
+" [<Ins> by default is like i, and <Del> like x.]
+" And for laptop where I've got Ins as a volume control:
+noremap <S-Ins> 2<C-Y>
+noremap <S-Del> 2<C-E>
+
+" In Visual Mode have $ just move to the end of the line as normal, rather than
+" moving once character past it and also selecting the line-break character;
+" I'm often doing this to place text in the X selection for pasting elsewhere,
+" and don't want the line-break:
+vnoremap $ $h
+nmap gl 0v$
+" TODO Consider now I've got gl whether I still want this generally in visual
+" mode. I haven't noticed it causing problems, so I think so.
+
+" use <F6> to cycle through split windows (and <Shift>+<F6> to cycle backwards,
+" where possible):
+nnoremap <F6> <C-W>w
+nnoremap <S-F6> <C-W>W
+
+" If multiple files were specified on the command line then use Ctrl+N/Ctrl+P
+" to cycle through them:
+if argc() >= 2
+  nnoremap <C-N> :next<Enter>
+  nnoremap <C-P> :prev<Enter>
+
+" Otherwise have Ctrl+N/Ctrl+P cycle through any quicklist. I don't manipulate
+" the argument list once Vim is loaded, so I can't think of any circumstances
+" when the above if wouldn't trigger when loading this config file but I would
+" want that behaviour. Though, if I do load multiple files and then do an :Ack,
+" maybe I'd then want to cycle through those. If there are circumstances where
+" this heurestic keeps being wrong, consider changing it to a single mapping
+" which checks when used:
+else
+  nnoremap <C-N> :cnext<Enter>
+  nnoremap <C-P> :cprev<Enter>
+endif
+" [By default Ctrl+N and Ctrl+P are like j and k.]
+
+" Have z<Space> be like zx but recursively opening everything under the current
+" line:
+nnoremap z<Space> zXzO
+
+" have % bounce between angled brackets, as well as t'other kinds:
+set matchpairs+=<:>
+
+" have <F1> prompt for a help topic, rather than displaying the introduction
+" page, and have it do this from any mode:
+nnoremap <F1> :help<Space>
+vmap <F1> <C-C><F1>
+omap <F1> <C-C><F1>
+map! <F1> <C-C><F1>
+
+
+" * Keystrokes -- Formatting
+
+" have Q reformat the current paragraph (or selected text if there is any):
+nnoremap Q gqap
+vnoremap Q gq
+
+" Use the EasyAlign plug-in with its suggested prefix of ga, plus Enter in
+" visual mode (which doesn't otherwise do anything interesting):
+nmap ga      <Plug>(EasyAlign)
+xmap ga      <Plug>(EasyAlign)
+xmap <Enter> <Plug>(EasyAlign)
+
+" That clobber's ga's original character code look-up, so make it available on
+" the otherwise unused gA:
+nnoremap gA ga
+xnoremap gA ga
+
+" Use EdgeMotion with its suggested mappings:
+nmap <C-J> <Plug>(edgemotion-j)
+nmap <C-K> <Plug>(edgemotion-k)
+vmap <C-J> <Plug>(edgemotion-j)
+vmap <C-K> <Plug>(edgemotion-k)
+
+" This just seems like a keystroke one would expect to work, and since it isn't
+" doing anything else let's make it so:
+vnoremap & :&<Enter>
+" TODO  Consider making & in both normal and visual mode actually do :&&
+" (keeping the flags)
+
+" have the usual indentation keystrokes still work in visual mode:
+vnoremap <C-T> >
+vnoremap <C-D> <LT>
+vmap <Tab> <C-T>
+vmap <S-Tab> <C-D>
+
+" have Y behave analogously to D and C rather than to dd and cc (which is
+" already done by yy):
+noremap Y y$
+
+" define :S as like :s but with Perl
+command -nargs=1 -range=% S <line1>,<line2>perldo s<args>gi
+
+" In diff mode have Ctrl+L refresh the diff highlighting as well as the
+" display.  It seems that this command is benign when not in diff mode, so do
+" it always cos it's easier:
+nnoremap <C-L> :diffupdate<Enter><C-L>
+
+
+" * Keystrokes -- Toggles
+
+" Keystrokes to toggle options are defined here.  They are all set to normal
+" mode keystrokes beginning \t but some function keys (which won't work in all
+" terminals) are also mapped.
+
+" Have \tw ("toggle wrap") toggle wrap on/off, set some appropriate keystrokes,
+" and report the change -- and where possible also have F4> do this too:
+nnoremap \tw :call <SID>ToggleWrap()<Enter>
+nmap <F4> \tw
+imap <F4> <C-O>\tw
+
+" have \tp ("toggle paste") toggle paste on/off and report the change, and
+" where possible also have <F5> do this both in normal and insert mode:
+nnoremap \tp :set invpaste paste?<CR>
+nmap <F5> \tp
+imap <F5> <C-O>\tp
+set pastetoggle=<F5>
+
+" have \tf ("toggle format") toggle the automatic insertion of line breaks
+" during typing and report the change:
+nnoremap \tf :if &fo =~ 'a' <Bar> set fo-=a <Bar> else <Bar> set fo+=a <Bar>
+  \ endif <Bar> set fo?<CR>
+nmap <F3> \tf
+imap <F3> <C-O>\tf
+
+" have \tl ("toggle list") toggle list on/off and report the change:
+nnoremap \tl :set invlist list?<CR>
+nmap <F2> \tl
+imap <F2> <C-O>\tl
+
+" have \th ("toggle highlight") toggle highlighting of search matches, and
+" report the change:
+nnoremap \th :set invhls hls?<CR>
+
+
+" * Keystrokes -- Insert Mode
+
+" allow <BkSpc> to delete line breaks, beyond the start of the current
+" insertion, and over indentations:
+set backspace=eol,start,indent
+
+" have Tab and BkSpc at the beginning of a line change the level of
+" indentation:
+set smarttab
+" [Tab later in the line inserts spaces up to the next tab stop -- but not an
+" actual tab character; Ctrl+V Tab is needed for that.]
+
+" abbreviations:
+iabbrev lfpg Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch
+iabbrev hse he/she
+iabbrev sm Smylers
+iabbrev 13link http://www.rightmove.co.uk/property-for-sale/property-48377053.html
+iabbrev 13add <F3><Enter><Enter><Enter>  13 Clifton Terrace<Enter>ILKLEY<Enter>LS29 8ED<Enter><Enter><BS><F3>
+iabbrev 13map http://osm.org/go/evjPJKk21--?m=
+
+" Bullet •:
+digraph ** 8226
+
+" Feet ′:
+digraph '' 8242
+
+" Inches: ″:
+digraph \"\" 8243
+" TODO Work out why those backslashes are needed, and where it's documented
+" that that's the right thing to do.
+
+
+" * Keystrokes -- For HTML Files
+
+" Some automatic HTML tag insertion operations are defined next.  They are
+" allset to normal mode keystrokes beginning \h.  Insert mode function keys are
+" also defined, for terminals where they work.  The functions referred to are
+" defined at the end of this .vimrc.
+
+" \hc ("HTML close") inserts the tag needed to close the current HTML construct
+" [function at end of file]:
+nnoremap \hc :call InsertCloseTag()<CR>
+imap <F8> <Space><BS><Esc>\hca
+
+" \hp ("HTML previous") copies the previous (non-closing) HTML tag in full,
+" including attributes; repeating this straight away removes that tag and
+" copies the one before it [function at end of file]:
+nnoremap \hp :call RepeatTag(0)<CR>
+imap <F9> <Space><BS><Esc>\hpa
+" \hn ("HTML next") does the same thing, but copies the next tag; so \hp and
+" \hn can be used to cycle backwards and forwards through the tags in the file
+" (like <Ctrl>+P and <Ctrl>+N do for insert mode completion):
+nnoremap \hn :call RepeatTag(1)<CR>
+imap <F10> <Space><BS><Esc>\hna
+
+
+" * `SLRN' Behaviour
+
+" when using `SLRN' to compose a new news article without a signature, the
+" cursor will be at the end of the file, the blank line after the header, so
+" duplicate this line ready to start typing on; when composing a new article
+" with a signature, `SLRN' includes an appropriate blank line but places the
+" cursor on the following one, so move it up one line [if re-editing a
+" partially-composed article, `SLRN' places the cursor on the top line, so
+" neither of these will apply]:
+autocmd VimEnter .article if line('.') == line('$') | yank | put |
+  \ elseif line('.') != 1 | -
+
+" when following up articles from people with long names and/or e-mail
+" addresses, the `SLRN'-generated attribution line can have over 80 characters,
+" which will then cause `SLRN' to complain when trying to post it(!), so if
+" editing a followup for the first time, reformat the line (then put the cursor
+" back):
+autocmd VimEnter .followup if line('.') != 1 | normal gq${j
+
+
+" * Functions Referred to Above
+
+function! HighlightSpellingErrors()
+" highlights spelling errors in the current window; used for the \sh operation
+" defined above;
+" requires the ispell, sort, and uniq commands to be in the path;
+" requires the global variable IspellLang to be defined above, and to contain
+" the preferred `Ispell' language;
+" for mail/news messages, requires the grep command to be in the path;
+" for HTML documents, saves the file to disk and requires the lynx command to
+" be in the path
+"
+" by Smylers  http://www.stripey.com/vim/
+" (inspired by Krishna Gadepalli and Neil Schemenauer's vimspell.sh)
+" 
+" 2000 Jun 1: for `Vim' 5.6
+
+  " for HTML files, remove all current syntax highlighting (so that
+  " misspellings show up clearly), and note it's HTML for future reference:
+  if &filetype == 'html'
+    let HTML = 1
+    syntax clear
+
+  " for everything else, simply remove any previously-identified spelling
+  " errors (and corrections):
+  else
+    let HTML = 0
+    if hlexists('SpellError')
+      syntax clear SpellError
+    endif
+    if hlexists('Normal')
+      syntax clear Normal
+    endif
+  endif
+
+  " form a command that has the text to be checked piping through standard
+  " output; for HTML files this involves saving the current file and processing
+  " it with `Lynx'; for everything else, use all the buffer except quoted text
+  " and mail/news headers:
+	" TODO Have that TERM= thing work for any shell, and comment why it's needed
+	" with the gui.
+  if HTML
+    write
+    let PipeCmd = '! TERM=xterm; lynx --dump --nolist % |'
+  else
+    let PipeCmd = 'write !'
+    if &filetype == 'mail'
+      let PipeCmd = PipeCmd . ' grep -v "^> " | grep -E -v "^[[:alpha:]-]+:" |'
+    endif
+  endif
+
+  " execute that command, then generate a unique list of misspelt words and
+  " store it in a temporary file:
+  let ErrorsFile = tempname()
+  execute PipeCmd . ' ispell -l -d '. g:IspellLang .
+    \ ' | sort | uniq > ' . ErrorsFile
+
+  " open that list of words in another window:
+  execute 'split ' . ErrorsFile
+
+  " for every word in that list ending with "'s", check if the root form
+  " without the "'s" is in the dictionary, and if so remove the word from the
+  " list:
+  global /'s$/ execute 'read ! echo ' . expand('<cword>') .
+    \ ' | ispell -l -d ' . g:IspellLang | delete
+  " (If the root form is in the dictionary, ispell -l will have no output so
+  " nothing will be read in, the cursor will remain in the same place and the
+  " :delete will delete the word from the list.  If the root form is not in the
+  " dictionary, then ispell -l will output it and it will be read on to a new
+  " line; the delete command will then remove that misspelt root form, leaving
+  " the original possessive form in the list!)
+
+  " only do anything if there are some misspellings:
+  if strlen(getline('.')) > 0
+
+    " if (previously noted as) HTML, replace each non-alphanum char with a
+    " regexp that matches either that char or a &...; entity:
+    if HTML
+      % substitute /\W/\\(&\\|\&\\(#\\d\\{2,4}\\|\w\\{2,8}\\);\\)/e
+    endif
+
+    " turn each mistake into a `Vim' command to place it in the SpellError
+    " syntax highlighting group:
+    % substitute /^/syntax match SpellError !\\</
+    % substitute /$/\\>!/
+  endif
+
+  " save and close that file (so switch back to the one being checked):
+  exit
+
+  " make syntax highlighting case-sensitive, then execute all the match
+  " commands that have just been set up in that temporary file, delete it, and
+  " highlight all those words in red:
+  syntax case match
+  execute 'source ' . ErrorsFile
+  call delete(ErrorsFile)
+  highlight SpellError term=reverse ctermfg=DarkRed guifg=Red
+
+  " with HTML, don't mark any errors in e-mail addresses or URLs, and ignore
+  " anything marked in a fix-width font (as being computer code):
+  if HTML
+    syntax case ignore
+    syntax match Normal !\<[[:alnum:]._-]\+@[[:alnum:]._-]\+\.\a\+\>!
+    syntax match Normal
+      \ !\<\(ht\|f\)tp://[-[:alnum:].]\+\a\(/[-_.[:alnum:]/#&=,]*\)\=\>!
+    syntax region Normal start=!<Pre>! end=!</Pre>!
+    syntax region Normal start=!<Code>! end=!</Code>!
+    syntax region Normal start=!<Kbd>! end=!</Kbd>!
+  endif
+
+endfunction " HighlightSpellingErrors()
+
+
+function! AddWordToDictionary()
+" adds the word under the cursor to the personal dictonary; used for the \sa
+" operation defined above;
+" requires the global variable PersonalDict to be defined above, and to contain
+" the `Ispell' personal dictionary;
+"
+" by Smylers  http://www.stripey.com/vim/
+" 
+" 2000 Apr 30: for `Vim' 5.6
+
+  " get the word under the cursor, including the apostrophe as a word character
+  " to allow for words like "won't", but then ignoring any apostrophes at the
+  " start or end of the word:
+  set iskeyword+='
+  let Word = substitute(expand('<cword>'), "^'\\+", '', '')
+  let Word = substitute(Word, "'\\+$", '', '')
+  set iskeyword-='
+
+  " override any SpellError highlighting that might exist for this word,
+  " `highlighting' it as normal text:
+  execute 'syntax match Normal #\<' . Word . '\>#'
+
+  " remove any final "'s" so that possessive forms don't end up in the
+  " dictionary, then add the word to the dictionary:
+  let Word = substitute(Word, "'s$", '', '')
+  execute '!echo "' . Word . '" >> ' . g:PersonalDict
+
+endfunction " AddWordToDictionary()
+
+
+function! InsertCloseTag()
+" inserts the appropriate closing HTML tag; used for the \hc operation defined
+" above;
+" requires ignorecase to be set, or to type HTML tags in exactly the same case
+" that I do;
+" doesn't treat <P> as something that needs closing;
+" clobbers register z and mark z
+" 
+" by Smylers  http://www.stripey.com/vim/
+" 2000 May 4
+
+  if &filetype =~ 'html\|php\|xml'
+
+    " list of tags which shouldn't be closed:
+    ""let UnaryTags = ' area base br dd dt hr img input li link meta p param '
+    let UnaryTags = ''
+
+    " remember current position:
+    normal mz
+
+    " loop backwards looking for tags:
+    let Found = 0
+    while Found == 0
+      " find the previous <, then go forwards one character and grab the first
+      " character plus the entire word:
+      execute "normal ?\<LT>\<CR>l"
+      normal "zyl
+      let Tag = expand('<cword>')
+
+      " if this is a closing tag, skip back to its matching opening tag:
+      if @z == '/'
+        execute "normal ?\<LT>" . Tag . "\<CR>"
+
+      " if this is a unary tag, then position the cursor for the next
+      " iteration:
+      elseif match(UnaryTags, ' ' . Tag . ' ') > 0 " TODO: rewrite with regexp
+        normal h
+
+      " otherwise this is the tag that needs closing:
+      else
+        let Found = 1
+
+      endif
+    endwhile " not yet found match
+
+    " create the closing tag and insert it:
+    let @z = '</' . Tag . '>'
+    normal `z
+    if col('.') == 1
+      normal "zP
+    else
+      normal "zp
+    endif
+
+  else " filetype is not HTML
+    echohl ErrorMsg
+    echo 'The InsertCloseTag() function is only intended to be used in HTML ' .
+      \ 'files.'
+    sleep
+    echohl None
+
+  endif " check on filetype
+
+endfunction " InsertCloseTag()
+
+
+function! RepeatTag(Forward)
+" repeats a (non-closing) HTML tag from elsewhere in the document; call
+" repeatedly until the correct tag is inserted (like with insert mode <Ctrl>+P
+" and <Ctrl>+N completion), with Forward determining whether to copy forwards
+" or backwards through the file; used for the \hp and \hn operations defined
+" above;
+" requires preservation of marks i and j;
+" clobbers register z
+" 
+" by Smylers  http://www.stripey.com/vim/
+" 
+" 2000 May 4: for `Vim' 5.6
+
+  if &filetype =~ 'html\|php\|xml'
+
+    " if the cursor is where this function left it, then continue from there:
+    if line('.') == line("'i") && col('.') == col("'i")
+      " delete the tag inserted last time:
+      if col('.') == strlen(getline('.'))
+        normal dF<x
+      else
+        normal dF<x
+        if col('.') != 1
+          normal h
+        endif
+      endif
+      " note the cursor position, then jump to where the deleted tag was found:
+      normal mi`j
+
+    " otherwise, just store the cursor position (in mark i):
+    else
+      normal mi
+    endif
+
+    if a:Forward
+      let SearchCmd = '/'
+    else
+      let SearchCmd = '?'
+    endif
+
+    " find the next non-closing tag (in the appropriate direction), note where
+    " it is (in mark j) in case this function gets called again, then yank it
+    " and paste a copy at the original cursor position, and store the final
+    " cursor position (in mark i) for use next time round:
+    execute "normal " . SearchCmd . "<[^/>].\\{-}>\<CR>mj\"zyf>`i"
+    if col('.') == 1
+      normal "zP
+    else
+      normal "zp
+    endif
+    normal mi
+
+  else " filetype is not HTML
+    echohl ErrorMsg
+    echo 'The RepeatTag() function is only intended to be used in HTML files.'
+    sleep
+    echohl None
+
+  endif
+
+endfunction " RepeatTag()
+
+
+nnoremap \ss :%!sort<Enter>
+vnoremap \ss :!sort<Enter>
+
+
+nnoremap \c :make<Enter>
+
+
+nnoremap \vu :call <SID>CVSUpdate()<Enter>
+nnoremap \vd :silent call <SID>CVSDiff()<Enter>
+" nnoremap \vd :!cvs diff % <Bar> gvim -c 'setlocal buftype=nofile' -<Enter><C-L>
+" TODO  Merge the above two, making sure to keep the :w in there.  Only bother
+" to open a new window (of either sort) if there are any differences: first
+" diff to a temp file, then display a message if it has no size (and read it in
+" to the window if it does).
+" TODO  Include -F^sub or similar in there, using something different for each
+" filetype (set in a variable, omitted if not used)
+nnoremap \vc :!cvs commit %<Enter>
+nnoremap \vn /\v^[<=><Bar>]{7}\_s<Enter>
+vnoremap \vn /\v^[<=><Bar>]{7}\_s<Enter>
+nnoremap \vp ?\v^[<=><Bar>]{7}\_s<Enter>
+vnoremap \vp ?\v^[<=><Bar>]{7}\_s<Enter>
+" TODO  Avoid W11 (if there are CVS tags in there that edit the file, for
+" instance), by, for example, temporarily turning on autoread.
+" TODO  Check the file permissions before committing, then set them back to
+" that afterwards if they've changed (such as become group-writable).  And
+" remember to avoid W16 while doing so!
+nnoremap \vl :!cvs log % <Bar> $PAGER<Enter>
+" TODO  Set PAGER if it isn't already, so the above works!
+nnoremap \va :!cvs add %<Enter>
+" TODO  Make \cc do this automatically if needed, and remove this mapping.
+
+
+function! s:git_diff_quicklist()
+
+  " Temporarily set errorformat to parse diffs:
+  let orig_errorformat = &l:errorformat
+  setlocal errorformat=
+
+  " TODO Work out if it's possible to avoid having bogus items for lines that
+  " get skipped. Use of %- in various places did do that, but made %m disappear
+  " for the second and subsequent files in a diff. The example given for
+  " errorformat-separate-filename also has bogus entries (look at the numbers
+  " in the output), so this may not be fixable.
+
+  " Capture the new filename (since that's what we can open), but don't count
+  " this line as an entry:
+  setlocal errorformat+=%P+++\ %f
+
+  " Ignore index lines:
+  setlocal errorformat+=%Cindex\ %.%#
+
+  " @@ lines start a hunk; grab the new line number for jumping to:
+  setlocal errorformat+=%A@@\ -%*\\d\ +%l\ @@\ %.%#
+
+  " Capture a removed line as the entry's message:
+  setlocal errorformat+=%C-%m
+
+  " Ignore any added lines (since they are still in the file, and will be
+  " jumped to):
+  setlocal errorformat+=%C+%.%#
+
+  " A diff line marks the start of a new filename. Since we don't need the
+  " filename from it, use it to mark the end of the previous filename (there
+  " not being any other handy way of doing that), and ignore the line:
+  setlocal errorformat+=%Qdiff\ %.%#
+
+  " TODO Avoid the temporary file, using cexpr system() -- find out why that
+  " doesn't work.
+  let file = tempname()
+  exe '!git diff --relative -U0 --no-color --no-prefix > ' . file
+  " TODO Avoid the hit-enter prompt (and remove an <Enter> from the mapping
+  " below).
+  exe 'cfile ' . file
+  call delete(file)
+
+  let &l:errorformat = orig_errorformat
+
+endfunction
+
+nnoremap \vq :call <SID>git_diff_quicklist()<Enter><Enter>zv
+nnoremap \j :cn<Enter>zv
+nnoremap \k :cN<Enter>zv
+
+function! s:CVSUpdate()
+
+ !cvs update 
+ " TODO  Make this work for the file's diretory, rather than the current
+ " directory.  %:.:h should do this, but is sometimes empty, so need to trap
+ " the error and try again with nothing in such a case
+
+endfunction
+
+
+function! s:CVSDiff()
+
+  w
+  new
+  setlocal buftype=nofile
+  r ! cvs diff #
+  1 delete
+  filetype detect
+
+endfunction
+
+nnoremap <silent> \np :call <SID>NewPerl()<Enter>
+function! s:NewPerl()
+
+  " Split the window, unless the current one is empty:
+  if (line2byte('$') > 1 || strlen(getline(1)))
+    new
+  endif
+
+  " Put the standard content at the top:
+  insert
+#! /usr/bin/perl
+
+# 
+
+use v5.14;
+use warnings;
+
+.
+
+  " If this buffer has a filename then insert that in the comment on line 3,
+  " save it, and make it executable:
+  let filename = expand('%:t')
+  if (strlen(filename))
+    execute '3s/$/' . filename
+    w
+    silent !chmod +x %
+
+    " Changing the permissions causes warning W16 to appear, prompting for
+    " whether to reload the file (like it matters anyway).  Pre-empt this by
+    " reloading the file anyway:
+    e
+    redraw
+  endif
+
+  " Ensure this is highlighted as Perl:
+  filetype detect
+
+  " Leave the cursor at the end:
+  $
+
+endfunction
+
+
+" Have ZQ work even if there's some visually selected text:
+vnoremap ZQ <C-C>ZQ
+
+nnoremap ZAQ :qa<Enter>
+nnoremap ZAZ :xa<Enter>
+" end of Smylers's .vimrc
+
+nnoremap <silent> <C-W>a :silent call <SID>AnotherWindow()<Enter>
+function! s:AnotherWindow()
+" TODO  Comments
+" TODO  Act gracefully if this is the only window (doing :gui if in a terminal,
+" an error message if already gui), but how to discover that?  Do try and catch
+" help?
+
+  if &readonly
+    let cmd = 'gview'
+  else
+    let cmd = 'gvim'
+  endif
+
+  let filename = expand('%')
+  if (strlen(filename))
+    x
+    execute '!' . cmd . ' #'
+  else
+    execute 'w ! ' . cmd  . ' -'
+    q!
+  endif
+
+endfunction
+" TODO generic plug-ins, for spelling-checking, CVS, file-handling
+" using the leader characters
+" 
+" \fr  rm %
+" \fx  chmod +x %
+" \fg  chmod -g %
+" \\   ./% \\ since it's repetative (unlike t'others, which are one-offs);
+"      or perhaps \fe for 'execute'
+" 
+" apache
+" _g graceful
+" _t configtest
+
+function! WrapText()
+" causes long lines to be wrapped on screen (but not in the file), and sets
+" related things to work well with this; global function, so that it can be
+" invoked by ftplugin/mediawiki.vim
+
+  " Also remove the options that make line-breaks be inserted in the middle of
+  " paragraphs as you type, so that long lines are typed as a single para:
+  setlocal wrap formatoptions-=t formatoptions-=c formatoptions-=a
+
+  " Make ^, 0, and $ operate on screen lines (rather than appearing to operate
+  " on paragraphs).  Unlike j and k these aren't mapped all the time cos they
+  " do mess up dealing with unwrapped long lines:
+  noremap <buffer> ^ g^
+  noremap <buffer> 0 g0
+  noremap <buffer> $ g$
+
+  " And make Q not do anything, to avoid inadvertently pressing it and
+  " splitting a paragraph into separate lines out of habit.  This local mapping
+  " overrides the global one; removing this will make the global one active
+  " again:
+  nnoremap <buffer> Q <NOP>
+  vnoremap <buffer> Q <NOP>
+
+endfunction
+
+
+function! s:ToggleWrap()
+" toggles whether long lines are viewed wrapped or partially scrolled off to
+" the side; invoked by \tw:
+
+  " If currently wrapping then do the opposite of what happened when it was
+  " turned on, in the else clause:
+  if &wrap
+
+    " Re-enable wrapping text as well as comments, regardless of what it was
+    " previously; this is only likely to be used with text files anyway:
+    setlocal nowrap formatoptions+=tca
+
+    " Restore ^, 0, $, and Q:
+    unmap <buffer> ^
+    unmap <buffer> 0
+    unmap <buffer> $
+    unmap <buffer> Q
+
+  " If wrap is currently off (the default, in this file anyway), turn it on:
+  else
+    call WrapText()
+
+  endif
+
+  setlocal wrap?
+
+endfunction

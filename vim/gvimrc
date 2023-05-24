@@ -1,0 +1,114 @@
+" .gvimrc
+"
+" Smylers's .gvimrc
+" http://www.stripey.com/vim/
+" 
+" 2000 Apr 30 -- for `Vim' 5.6
+
+
+" Undo damaged caused by system gvimrc:
+set nohlsearch
+
+let $EDITOR = 'gvim -f'
+
+" Configure less more suitably for a dumb terminal: horizontal scrolling
+" doesn't work so don't attempt it with -S; ditto for coloured output with -R;
+" acknowledge it's a dumb terminal with -d; and since the cursor keys appear to
+" be invalid, supress beeping on an invalid keystroke with -Q:
+let $LESS = substitute($LESS, '\C[SR]', '', 'g') . 'dQ'
+
+" Even with the above less can't cope with some of the formatting that man
+" spits out, and I can't work out the man, troff, or less options to supress
+" this.  So give up and have man use more instead:
+let $MANPAGER = 'more'
+
+" Vim's terminal doesn't do color:
+let $ACK_OPTIONS = '--no-color'
+" TODO Fix that for modern Ack. I think I could put a wrapper script in
+" ~/etc/vim/bin/ then prepend that to the path. Or try switching to rg instead.
+
+" TODO  Remove the F5 paste toggle, since it's never needed!
+
+" always have syntax highlighting on with the gui:
+syntax on
+
+" scroll bar at the left rather than the right:
+set guioptions-=r
+set guioptions+=l
+
+" no menu, and no toolbar:
+set guioptions-=m
+set guioptions-=T
+
+" title defaults to on on the gui, except if the gui is started with the :gui
+" command from Vim running in a terminal where title is off; ensure it's always
+" on, even in that situation:
+set title
+
+if &diff
+  set columns=161
+else
+  set columns=80
+endif
+
+if $GDM_GNOME_SESSION == 'presentation'
+  set guifont=*lucidatypewriter*medium*r*normal*180*iso8859-1*
+  set lines=38
+
+" Normally have a small-ish yet readable font:
+else
+  set guifont=Ubuntu\ Mono\ 10.5
+  " Ubuntu Mono 8.9 seems to be the same height as Liberation Mono 8; it fits
+  " the same number of lines on my screen, anyway. It looks like it's Ubuntu
+  " Mono 9 but with less leading.
+  set lines=40
+
+endif
+
+" If running as another user, use a tinted background colour to make it stand
+" out. As well as alerting you to changing a live file when you didn't intend
+" to, it's also useful the other way: you open a system file as yourself to
+" view it, then later want to make changes, forgetting that you didn't use
+" sudo:
+if len($SUDO_USER)
+  highlight Normal guibg=#F7E7FF
+endif
+
+
+" Make Alt+1 to Alt+8 switch to that numbered tab:
+for n in range(1, 8) 
+  exe 'nnoremap <M-' . n . '> ' . n . 'gt'
+endfor
+
+" And Alt+9 go to the last tab (Alt+0 may be better for this, leaving 9 for the
+" 9th tab, but this matches Firefox, and it's less confusing to have the same
+" behaviour in both):
+nnoremap <M-9> :tablast<Enter>
+
+" Ctrl+Tab for cycling through tabs:
+nnoremap <C-Tab> gt
+nnoremap <C-S-Tab> gT
+" XXX Where is <C-S-foo> documented as allowable syntax?
+
+" XXX This is just Ctrl+F4, not Alt+F4, so just on current window. Check if
+" should be in Vim, too:
+nnoremap <C-F4> :q<Enter>
+vnoremap <C-F4> <Esc>:q<Enter>
+inoremap <C-F4> <Esc>:q<Enter>
+
+" have error messages red on white (rather than t'tother way round, which isn't
+" readable in the above font):
+highlight ErrorMsg guibg=White guifg=Red
+
+" Have search matches highlighted in pink rather than yellow, because the edge
+" of a yellow block is hard to determine against a white background:
+highlight Search guibg=#FF7FCF
+
+" Use GitGutter. Don't bother loading this in terminals, because for anything
+" complicated enough to matter I'm much more likely to be using the gui, and
+" terminals don't have the 2 extra columns for the signs anyway:
+augroup GitGutterLoad
+autocmd BufNewFile,BufRead * call gitgutter_load#check()
+augroup END
+
+" end of Smylers's .gvimrc
