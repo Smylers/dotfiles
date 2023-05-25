@@ -1,3 +1,10 @@
 # Have generic config in one tree, and tagged config with person ID in a
 # separate one, which can be kept more private:
 DOTFILES_DIRS=~/.dotfiles" "~/.id
+
+# Allow the dotfiles repository to store additional files which aren't
+# installed elsewhere, for programmes which don't have RC files or need them
+# customizing in some way. Mark these with a leading underscore, so they stand
+# out in the directory listing, and to make them easy to exclude from being
+# installed; nothing uses ~/._*:
+EXCLUDES="_*"

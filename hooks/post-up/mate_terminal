@@ -1,0 +1,13 @@
+#! /bin/sh
+# 
+# mate_terminal
+#
+# Mate Terminal stores its config in dconf, not in RC files, so the config file
+# in this repository doesn't need installing anywhere; instead it needs loading
+# into dconf.
+
+
+# This runs from the hooks/post-up/ subdirectory, so go up twice to find the
+# _manual/ subdirectory without needing to know where this repository is
+# installed:
+dconf load /org/mate/terminal/ < ../../_manual/mate-terminal.conf
