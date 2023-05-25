@@ -1,0 +1,8 @@
+#! /bin/sh
+#
+# tmp_dir
+#
+# Ensures ~/tmp/ exists, which is needed for (among other things) the ssh
+# command to work, since it sets ControlPath there.
+
+mkdir -p -m go= ~/tmp/
