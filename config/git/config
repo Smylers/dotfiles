@@ -1,6 +1,9 @@
 [help]
   autocorrect = 5
 
+[init]
+  defaultBranch = main
+
 [core]
 	abbrev = 8
 [color]
