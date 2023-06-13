@@ -1,0 +1,18 @@
+#! /bin/bash
+#
+# hooks/post-up/pgcli
+#
+# Generates the pgcli config from fragments, thereby allowing general and
+# personal config to be stored separately.
+
+cd ~/.config/pgcli || exit 1
+
+shopt -s nullglob
+shopt -u failglob
+FRAG=(*.frag)
+
+# Only overwrite any existing config if there are actually some fragments:
+if ((${#FRAG[@]}))
+then
+  cat "${FRAG[@]}" > config
+fi
