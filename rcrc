@@ -8,3 +8,5 @@ DOTFILES_DIRS=~/.dotfiles" "~/.id
 # out in the directory listing, and to make them easy to exclude from being
 # installed; nothing uses ~/._*:
 EXCLUDES="_*"
+
+UNDOTTED="share*"
