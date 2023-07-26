@@ -1,0 +1,75 @@
+# .inputrc
+# 
+# Smylers's Readline configuration
+
+
+# Normally don't permit readline to beep (for things such as trying to move
+# before the first character, or cycling past the end of possible completions):
+set bell-style none
+
+# But continue to let Ctrl+G provide beeps on request.  For some reason mapping
+# this to the readline sequence "\a" doesn't work, so use the echo command
+# instead -- with Ctrl+U and Ctrl+K before it to remove anything currently on
+# the line (so that it is a valid command):
+"\C-g": "\C-U\C-Kecho -en '\\a'\C-M"
+
+# completion:
+"\C-i": menu-complete
+"\e[Z": menu-complete-backward
+# (Shift+Tab, it seems, found with sed -n l.)
+set completion-ignore-case on
+set show-all-if-ambiguous on
+$if Bash
+  set match-hidden-files off
+$endif
+set skip-completed-text
+set visible-stats on
+set menu-complete-display-prefix on
+
+# Make Up and Down only cycle through previous commands with the already-typed
+# prefix (Ctrl+P and Ctrl+N retain their original meanings if needed); allow
+# for both sets of keycodes that seem to be used for the cursor keys:
+"\e[A": history-search-backward
+"\eOA": history-search-backward
+"\e[B": history-search-forward
+"\eOB": history-search-forward
+
+# For some reason on some systems setting the above stops <Left> and <Right>
+# working, so explicitly set them back to their defaults:
+"\e[C": forward-char
+"\e[D": backward-char
+
+set revert-all-at-newline on
+
+# Ctrl+] and Meta+Ctrl+] are hard to remember and not that easy to type, so
+# provide alternatives.  The mnemonic is that Meta+A and Meta+E are movements
+# in the direction of where Ctrl+A and Ctrl+E would go:
+"\ea": character-search-backward
+"\ee": character-search
+
+# Make Meta+O be for adding an option to the previous command -- go up to the
+# previous command, then to the beginning of the line, then one word forward,
+# then insert a space, leaving the cursor at exactly the right position for
+# typing an option before any other arguments:
+"\eo": "\C-p\C-a\C-]  "
+
+# Alt+Up changes up a directory:
+"\e[1;3A": "\C-U\C-Kcd ..\C-M"
+
+# Alt+Back goes to the previous directory:
+"\e[1;3D": "\C-U\C-Kcd -\C-M"
+
+# history expansion:
+$if Bash
+  Space: magic-space
+
+  # Meta+, repeats the argument just typed:
+  "\e,": "!#$ \b"
+$endif
+
+$if psql
+  set comment-begin -- 
+  # NB  Space character at end of above line
+$endif
+
+"\C-Xd": dump-functions
