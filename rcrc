@@ -9,4 +9,5 @@ DOTFILES_DIRS=~/.dotfiles" "~/.id
 # installed; nothing uses ~/._*:
 EXCLUDES="_*"
 
-UNDOTTED="share*"
+# Visible share directory for icons and the like:
+UNDOTTED="share"
