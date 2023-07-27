@@ -11,3 +11,7 @@ EXCLUDES="_*"
 
 # Visible share directory for icons and the like:
 UNDOTTED="share"
+
+# If the Quod Libet station databases are symlinks, it just overrwrites them
+# with new files anyway, so they may as well be files to start with:
+COPY_ALWAYS="config/quodlibet/stations*"
