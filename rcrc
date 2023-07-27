@@ -15,3 +15,7 @@ UNDOTTED="share"
 # If the Quod Libet station databases are symlinks, it just overrwrites them
 # with new files anyway, so they may as well be files to start with:
 COPY_ALWAYS="config/quodlibet/stations*"
+
+# The only thing in Vim package directories are entire packages, so link each
+# one as a whole, rather than the dozens of individual files:
+SYMLINK_DIRS="vim/pack/*"
