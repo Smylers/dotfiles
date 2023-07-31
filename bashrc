@@ -996,5 +996,14 @@ rm $default_bindings
 # Use Alt+, for picking files:
 bind -x '"\e,": "fzf-file-widget"'
 
-# Complete after **:
-source /usr/share/doc/fzf/examples/completion.bash
+# Complete after **. Debian moved the location of the file between versions; as
+# message 30 on this bug points out, the new location doesn't actually help
+# with anything: https://bugs.debian.org/973570
+for f in /usr/share/{bash-completion/completions/fzf,doc/fzf/examples/completion.bash}
+do
+  if [ -f $f ]
+  then
+    source $f
+    break
+  fi
+done
