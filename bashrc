@@ -985,7 +985,7 @@ function aoc
   cd "$(advent_of_code_dir)"
 }
 
-default_bindings=$(tempfile)
+default_bindings=$(mktemp)
 bind -p > $default_bindings
 source /usr/share/doc/fzf/examples/key-bindings.bash
 
