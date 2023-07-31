@@ -117,8 +117,15 @@ umask ug=rwx,o=rx
 export TMP=~/tmp/
 export TMPDIR=$TMP
 export PERL_CPANM_OPT='--sudo --prompt'
-export PERLBREW_ROOT=~/lib/perlbrew
-source $PERLBREW_ROOT/etc/bashrc
+
+PERLBREW_ROOT=~/lib/perlbrew
+if [ -d $PERLBREW_ROOT ]
+then
+  export PERLBREW_ROOT
+  source $PERLBREW_ROOT/etc/bashrc
+else
+  unset PERLBREW_ROOT
+fi
 
 # Default to less being unobtrusive -- being undetectable if there's only one
 # screen, leaving output in the main terminal, and being quittable just by
