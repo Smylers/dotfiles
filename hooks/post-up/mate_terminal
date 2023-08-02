@@ -7,6 +7,13 @@
 # into dconf.
 
 
+# Only run if mate-terminal is installed. Ideally this hook would be in the
+# tag-desktop directory, but hooks aren't tagged.
+if ! command -v mate-terminal &> /dev/null
+then
+  exit
+fi
+
 # This runs from the hooks/post-up/ subdirectory, so go up twice to find the
 # _manual/ subdirectory without needing to know where this repository is
 # installed:
