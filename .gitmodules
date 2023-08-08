@@ -1,3 +1,6 @@
 [submodule "vim/pack/vim-easy-align"]
 	path = vim/pack/submodules/start/vim-easy-align
 	url = https://github.com/junegunn/vim-easy-align
+[submodule "vim/pack/GitGutter/start/vim-gitgutter"]
+	path = vim/pack/submodules/opt/vim-gitgutter
+	url = git@github.com:airblade/vim-gitgutter.git
