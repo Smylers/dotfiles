@@ -9,7 +9,7 @@
 
 # Only run if mate-terminal is installed. Ideally this hook would be in the
 # tag-desktop directory, but hooks aren't tagged.
-if ! command -v mate-terminal &> /dev/null
+if ! command -v mate-terminal > /dev/null
 then
   exit
 fi
