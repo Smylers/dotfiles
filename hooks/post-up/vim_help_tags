@@ -1,0 +1,14 @@
+#! /bin/sh
+#
+# vim_help_tags
+#
+# Generates Vim help tags for any package which doesn't already have them.
+
+
+for doc_dir in ~/.vim/pack/*/*/*/doc
+do
+  if [ ! -f "$doc_dir/tags" ]
+  then
+    ex -u NONE -c "helptags $doc_dir" -c q
+  fi
+done
