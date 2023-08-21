@@ -131,6 +131,13 @@ function s:MaybeLoadGitGutter()
     let horz_windows = &columns / 80
     let &columns = 82 * horz_windows + horz_windows - 1
     vert resize 82
+
+    " Weirdly, setting columns causes the window to appear blank when it's
+    " finally displayed; characters appear as the cursor moves over them, and
+    " pressing Ctrl+L makes everything appear. Just as wierdly, a small sleep
+    " prevents that happening. I don't understand why; a refresh doesn't help:
+    sleep 20m
+
     packadd vim-gitgutter
 
     " The package has been loaded now, so there's no need to load it again this
