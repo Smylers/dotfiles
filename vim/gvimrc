@@ -104,11 +104,46 @@ highlight ErrorMsg guibg=White guifg=Red
 " of a yellow block is hard to determine against a white background:
 highlight Search guibg=#FF7FCF
 
-" Use GitGutter. Don't bother loading this in terminals, because for anything
-" complicated enough to matter I'm much more likely to be using the gui, and
-" terminals don't have the 2 extra columns for the signs anyway:
+" Use GitGutter when editing a file that's in a Git repository. Don't bother
+" loading this in terminals, because the highlightling can't be as subtle, for
+" anything complicated enough to matter I'm much more likely to be using the
+" gui, and terminals don't have the 2 extra columns for the signs anyway. When
+" loading or creating a file, check if it's in a directory under Git control:
 augroup GitGutterLoad
-autocmd BufNewFile,BufRead * call gitgutter_load#check()
+  autocmd BufNewFile,BufRead * call s:MaybeLoadGitGutter()
 augroup END
+
+function s:MaybeLoadGitGutter()
+" loads the GitGutter package if the current file is under Git control, then
+" removes the autocommand which invoked this
+"
+  " git rev-parse works in the current directory. We want to know about the
+  " directory the file is in, so (temporarily) change to it:
+  exe 'cd ' . expand('%:h')
+
+  " If this is under Git then load the package:
+  if system('git rev-parse --is-inside-work-tree') == "true\n"
+
+    " Add the sign column, so the GitGutter symbols can be seen, make them
+    " update at the recommended frequency, make the window wider to allow for
+    " the extra 2 columns, then load the package:
+    set signcolumn=yes updatetime=100
+    let horz_windows = &columns / 80
+    let &columns = 82 * horz_windows + horz_windows - 1
+    vert resize 82
+    packadd vim-gitgutter
+
+    " The package has been loaded now, so there's no need to load it again this
+    " Vim session; remove the autocommand which triggered this:
+    augroup GitGutterLoad
+      autocmd!
+    augroup END
+    augroup! GitGutterLoad
+  endif
+
+  " Change back to where we started:
+  cd -
+
+endfunction
 
 " end of Smylers's .gvimrc
