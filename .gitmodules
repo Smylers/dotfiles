@@ -4,3 +4,6 @@
 [submodule "vim/pack/GitGutter/start/vim-gitgutter"]
 	path = vim/pack/submodules/opt/vim-gitgutter
 	url = git@github.com:airblade/vim-gitgutter.git
+[submodule "vim/pack/submodules/start/vim-edgemotion"]
+	path = vim/pack/submodules/start/vim-edgemotion
+	url = git@github.com:haya14busa/vim-edgemotion.git
