@@ -1,0 +1,11 @@
+*yank-filename.txt*                Plugin for yanking the filename to X selection
+
+                                                                             *gy*
+To yank the current filename to the X selection, type gy — then it will be
+available for inserting in other applications with the middle mouse button or
+pressing <S-Ins>.
+
+To change the keystrokes that do this, define a mapping before loading the
+plugin like this (replacing gy with whatever you want):
+
+  nmap <unique> gy <Plug>Yankfilename;
