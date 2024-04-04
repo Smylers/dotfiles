@@ -92,11 +92,19 @@ shopt -s checkhash
 
 # * Locale
 
-# Mostly assume UK English settings (if possible); $LANG is the default locale
-# for any individual LC_* variable that hasn't been set; if multiple UK locales
-# are available the reverse sort should prefer the UTF8 one; fall back to C if
-# there aren't any:
-export LANG=$(locale -a | (grep ^en_GB || echo C) | sort -r | head -n 1)
+# Find the best locale available, trying UK English, American English, and C in
+# order, all with UTF-8, and finally falling back to Ascii C. $LANG is the
+# default locale for any individual LC_* variable that hasn't been set:
+avail=$(locale -a)
+for try in {en_{GB,US},C}.utf8 C
+do
+  if echo "$avail" | grep -qFx $try
+  then
+    export LANG=$try
+    break
+  fi
+done
+unset avail try
 
 # Some programs, notably units, use $LOCALE for the locale:
 export LOCALE=$LANG
