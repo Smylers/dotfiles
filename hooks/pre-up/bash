@@ -1,0 +1,33 @@
+#! /bin/sh
+#
+# hooks/pre-up/bash
+#
+# Before configuring Bash, check for the existence of tools it relies on, and
+# if they aren't found then try to install them.
+
+
+# List of packages to install:
+pkg=""
+
+# en_GB.utf8 locale:
+if ! locale -a | grep -qFx en_GB.utf8
+then
+  echo Trying to install en_GB.utf8 locale.
+
+  # By default apt prompts for confirmation and immediately exits; it appears
+  # that inside this hook stdin has been redirected, so redirect it back to the
+  # terminal:
+  pkg="$pkg language-pack-en-base"
+fi
+
+# FZF:
+if ! command -v fzf > /dev/null
+then
+  echo Trying to install fzf.
+  pkg="$pkg fzf"
+fi
+
+if [ "$pkg" ]
+then
+  sudo apt install $pkg < /dev/tty
+fi
