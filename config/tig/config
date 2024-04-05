@@ -1,0 +1,17 @@
+# In the commit list show commit IDs; abbreviate the author to initials (since
+# it's usually me or otherwise not relevant, but that's enough to distinguish
+# people on small teams); relative dates, just wide enough to fit in enough to
+# be readable; and the commit graph before the messages:
+set main-view = id author:width=2 date:relative,width=8 commit-title:graph=v2,refs
+
+# Commit graph with nice line characters:
+set line-graphics = utf-8
+
+# Default to diff -w, because that's usually more illuminating of the intention
+# behind a commit:
+set ignore-space = all
+
+# Search case-insensitively by default:
+set ignore-case = smart-case
+
+
