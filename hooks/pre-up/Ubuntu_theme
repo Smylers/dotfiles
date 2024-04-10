@@ -1,0 +1,27 @@
+#! /bin/sh
+#
+# hooks/pre-up/Ubuntu_theme
+#
+# Installs the pre-requisites for playing the Ubuntu theme tune
+
+
+# Only run in a desktop environment:
+if [ ! "$XDG_CURRENT_DESKTOP" ]
+then
+  exit
+fi
+
+dir=~/share/music
+file=Ubuntu_theme.ogg
+if [ ! -f "$dir/$file" ]
+then
+  echo Trying to download the Ubuntu theme
+  mkdir -p "$dir"
+  wget -O "$dir/$file" "https://drive.google.com/file/d/18TUZlxxiyJ4I7OSj8ivDL6p2XXTbnZHg/view?usp=share_link"
+fi
+
+if ! command -v paplay > /dev/null
+then
+  echo Trying to install paplay
+  sudo apt install pulseaudio-utils
+fi

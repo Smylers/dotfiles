@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Ubuntu Theme Tune
+Comment=Play the Ubuntu theme tune after logging in
+Type=Application
+Exec=paplay Downloads/desktop-login.ogg
+Terminal=false
+StartupNotify=false
+X-GNOME-Autostart-enabled=true
