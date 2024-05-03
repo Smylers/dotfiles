@@ -23,5 +23,5 @@ fi
 if ! command -v paplay > /dev/null
 then
   echo Trying to install paplay
-  sudo apt install pulseaudio-utils
+  sudo apt install pulseaudio-utils < /dev/tty
 fi
