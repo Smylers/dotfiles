@@ -14,4 +14,7 @@ set ignore-space = all
 # Search case-insensitively by default:
 set ignore-case = smart-case
 
-
+# Bright yellow and cyan aren't readable on a pale background, so instead make
+# them normal shades but reversed:
+color main-tracked		yellow	default	standout
+color main-head			cyan	default	standout
