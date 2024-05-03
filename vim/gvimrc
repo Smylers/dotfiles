@@ -70,7 +70,7 @@ endif
 " to, it's also useful the other way: you open a system file as yourself to
 " view it, then later want to make changes, forgetting that you didn't use
 " sudo:
-if len($SUDO_USER)
+if len($DOAS_USER) || len($SUDO_USER)
   highlight Normal guibg=#F7E7FF
 endif
 
