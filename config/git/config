@@ -62,6 +62,11 @@
 [safe]
 	directory = /usr/local
 
+# When connecting to GitHub, always use SSH, even on a shared repository where
+# others are using HTTPS:
+[url "git@github.com:"]
+	insteadOf = https://github.com
+
 # Have personal identifiers in a separate file, and include those here:
 [include]
   path = id_config
