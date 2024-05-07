@@ -669,19 +669,6 @@ export -f po
 # TODO  Factor out the repetition in the above 2 function definitions.
 
 
-function duff
-# produces a unified diff
-{
-  colordiff -ur "$@"
-  # TODO  Add in more flags.  -r may as well always be there, consider -p for
-  # .c programs and -F with regexes for other things.  See this page for
-  # suggestions:
-  # 
-  #   http://www.xray.mpe.mpg.de/mailing-lists/perl5-porters/2002-08/msg01173.html
-}
-export -f duff
-
-
 function gduff
 # opens a Vim window with a diff
 {
