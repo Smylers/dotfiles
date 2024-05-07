@@ -2,8 +2,8 @@
 #
 # hooks/pre-up/bash
 #
-# Before configuring Bash, check for the existence of tools it relies on, and
-# if they aren't found then try to install them.
+# Before configuring Bash, check for the existence of tools it relies on and
+# other useful utilities, and if they aren't found then try to install them.
 
 
 # List of packages to install:
@@ -20,12 +20,15 @@ then
   pkg="$pkg language-pack-en-base"
 fi
 
-# FZF:
-if ! command -v fzf > /dev/null
-then
-  echo Trying to install fzf.
-  pkg="$pkg fzf"
-fi
+# Commands whose package name is identical to the command name:
+for cmd in fzf colordiff
+do
+  if ! command -v $cmd > /dev/null
+  then
+    echo Trying to install $cmd.
+    pkg="$pkg $cmd"
+  fi
+done
 
 if [ "$pkg" ]
 then
