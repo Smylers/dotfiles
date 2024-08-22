@@ -1,0 +1,23 @@
+#! /bin/bash
+# 
+# hooks/post-up/firefox — rcup hook for Firefox preferences
+#
+# Link the Firefox prefences into the profile directories, which have random
+# names.
+
+
+# The default profile's directory will have ‘.default’ in its name, such as
+# g1kzr92u.default or lnyrs5pt.default-beta. If more than one is found, apply
+# this to all of them.
+#
+# If there are no Firefox profiles (perhaps because Firefox isn't installed),
+# then just do nothing:
+shopt -s nullglob
+shopt -u failglob
+
+# rcup will install user.js into the parent directory of the individual
+# profiles, so link to that:
+for dir in ~/.mozilla/firefox/*.default*
+do
+  ln -sf ../user.js "$dir"
+done
