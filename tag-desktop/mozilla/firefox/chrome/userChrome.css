@@ -1,0 +1,8 @@
+/* userChrome.css — Firefox interface customization */
+
+
+/* Hide individual tab close buttons: */
+.tabbrowser-tab .tab-close-button
+{
+  visibility: collapse !important;
+}

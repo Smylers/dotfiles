@@ -17,7 +17,10 @@ shopt -u failglob
 
 # rcup will install user.js into the parent directory of the individual
 # profiles, so link to that:
-for dir in ~/.mozilla/firefox/*.default*
+for profile in ~/.mozilla/firefox/*.default*
 do
-  ln -sf ../user.js "$dir"
+  for config in user.js chrome
+  do
+    ln -sf ../"$config" "$profile"
+  done
 done
