@@ -21,3 +21,6 @@ user_pref("accessibility.tabfocus", 3);
 
 // Stop animating images once they've been through once:
 user_pref("image.animation_mode", 'once');
+
+// Minimum font size on pages:
+user_pref("font.minimum-size.x-western", '14');
