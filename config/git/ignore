@@ -2,5 +2,11 @@
 .*.sw?
 .sw?
 
+# Vim session:
+Session.vim
+
+# Vim tags:
+tags
+
 # LibreOffice lock:
 .~lock.*#
