@@ -17,3 +17,6 @@ human=.txt
 
 --pager
 $PAGER
+
+--ignore-file
+is:tags
