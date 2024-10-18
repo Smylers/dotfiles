@@ -21,7 +21,7 @@ then
 fi
 
 # Commands whose package name is identical to the command name:
-for cmd in fzf colordiff
+for cmd in ack fzf colordiff
 do
   if ! command -v $cmd > /dev/null
   then
