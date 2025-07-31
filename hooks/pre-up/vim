@@ -1,0 +1,15 @@
+#! /bin/sh
+#
+# hooks/pre-up/vim
+#
+# Before deploying a .vimrc which relies on Vim with certain features, ensure
+# a Vim that can cope with it is installed. Annoyingly, Ubuntu by default comes
+# with a vi command which is a minimal Vim but which still tries to read
+# ~/.vimrc ‒ then complains that it can't!
+
+
+if ! command -v vim > /dev/null
+then
+  echo Trying to install vim-gtk3
+  sudo apt install vim-gtk3 < /dev/tty
+fi
