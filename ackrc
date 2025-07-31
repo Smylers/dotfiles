@@ -16,7 +16,7 @@ tt=.tmpl
 human=.txt
 
 --pager
-$PAGER
+${PAGER-cat}
 
 --ignore-file
 is:tags
