@@ -1,0 +1,13 @@
+#! /bin/sh
+# 
+# gnome
+#
+# Gnome customization is stored in DConf, not dot-files, so load it there.
+
+
+if [ -z "$XDG_CURRENT_DESKTOP" ]
+then
+  exit
+fi 
+
+dconf load /org/gnome/ < ../../_manual/Gnome.conf
