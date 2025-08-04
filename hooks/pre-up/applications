@@ -1,0 +1,72 @@
+#! /bin/sh
+#
+# hooks/pre-up/applications
+#
+# Standard applications I want installing. Not really to do with dot-files, but
+# part of my standard set-up, so it's reasonable to hook them in here.
+
+
+# Nala first, so I can use that to install other packages:
+if ! command -v nala > /dev/null
+then
+  echo Trying to install nala
+  sudo apt install nala < /dev/tty
+fi
+
+# List of packages to install:
+pkg=""
+
+# Commands whose package name is identical to the command name:
+for cmd in ncal units pgcli curl zathura ffmpeg
+do
+  if ! command -v $cmd > /dev/null
+  then
+    echo Trying to install $cmd.
+    pkg="$pkg $cmd"
+  fi
+done
+
+if ! command -v sshtunnel > /dev/null
+then
+  echo Trying to install python3-sshtunnel.
+  pkg="$pkg python3-sshtunnel"
+fi
+
+if ! command -v convert > /dev/null
+then
+  echo Trying to install imagemagick.
+  pkg="$pkg imagemagick"
+fi
+
+# Wordlists:
+for lang in british american
+do
+  for size in '' '-huge'
+  do
+    if [ ! -f /usr/share/dict/$lang-english$size ]
+    then
+      dict=w$lang$size
+      echo Trying to install $dict.
+      pkg="$pkg $dict"
+    fi
+  done
+done
+
+# Graphical applications, only to install if running directly in a desktop
+# environment:
+if [ "$XDG_CURRENT_DESKTOP" ]
+then
+  for cmd in quodlibet gimp inkscape scribus libreoffice gnumeric
+  do
+    if ! command -v $cmd > /dev/null
+    then
+      echo Trying to install $cmd.
+      pkg="$pkg $cmd"
+    fi
+  done
+fi
+
+if [ "$pkg" ]
+then
+  sudo nala install $pkg < /dev/tty
+fi
