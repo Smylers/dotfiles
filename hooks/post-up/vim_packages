@@ -1,9 +1,12 @@
 #! /bin/sh
 #
-# vim_help_tags
+# vim_packages
 #
-# Generates Vim help tags for any package which doesn't already have them.
+# Ensures external packages in Git submodules are installed, and generates Vim
+# help tags for them.
 
+
+git submodule update --init
 
 for doc_dir in ~/.vim/pack/*/*/*/doc
 do
