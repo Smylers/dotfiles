@@ -17,7 +17,7 @@ fi
 pkg=""
 
 # Commands whose package name is identical to the command name:
-for cmd in ncal units pgcli curl zathura ffmpeg
+for cmd in plocate ncal units pgcli curl zathura ffmpeg
 do
   if ! command -v $cmd > /dev/null
   then
