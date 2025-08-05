@@ -11,3 +11,9 @@ then
 fi 
 
 dconf load /org/gnome/ < ../../_manual/Gnome.conf
+
+if [ ! -d /usr/share/doc/network-manager-fortisslvpn-gnome ]
+then
+  echo Trying to install network-manager-fortisslvpn-gnome.
+  sudo nala install network-manager-fortisslvpn-gnome < /dev/tty
+fi
