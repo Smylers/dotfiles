@@ -17,7 +17,7 @@ fi
 pkg=""
 
 # Commands whose package name is identical to the command name:
-for cmd in plocate ncal units pgcli curl zathura ffmpeg
+for cmd in plocate ncal units tig pgcli curl zathura ffmpeg
 do
   if ! command -v $cmd > /dev/null
   then
@@ -36,6 +36,12 @@ if ! command -v convert > /dev/null
 then
   echo Trying to install imagemagick.
   pkg="$pkg imagemagick"
+fi
+
+if ! command -v /usr/bin/cpanm > /dev/null
+then
+  echo Trying to install cpanminus.
+  pkg="$pkg cpanminus"
 fi
 
 # Wordlists:
