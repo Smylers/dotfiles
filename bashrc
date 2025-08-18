@@ -296,7 +296,7 @@ then
     fi
 
     uh=''
-    if [[ $USER != @(smy?(l)ers|simon?(.m)|root) ]]
+    if [[ $USER != @(smy?(l)ers|simon?(myers|.m)|root) ]]
     then
       uh=$USER@$hostname:
     elif [ "$remote" ]
