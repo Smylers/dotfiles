@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #
 # hooks/pre-up/applications
 #
@@ -17,7 +17,7 @@ fi
 pkg=""
 
 # Commands whose package name is identical to the command name:
-for cmd in plocate ncal units tig pgcli curl zathura ffmpeg
+for cmd in nvi plocate ncal units tig pgcli curl zathura ffmpeg
 do
   if ! command -v $cmd > /dev/null
   then
@@ -75,4 +75,11 @@ fi
 if [ "$pkg" ]
 then
   sudo nala install $pkg < /dev/tty
+
+  # If nvi has been installed then make it be used for the vi command:
+  if [[ $pkg =~ (^| )nvi( |$) ]]
+  then
+    sudo echo nvi installed
+    sudo update-alternatives --set vi /usr/bin/nvi
+  fi
 fi
