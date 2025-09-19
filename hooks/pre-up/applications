@@ -62,7 +62,14 @@ done
 # environment:
 if [ "$XDG_CURRENT_DESKTOP" ]
 then
-  for cmd in quodlibet gimp inkscape scribus libreoffice gnumeric
+
+  if ! command -v quodlibet > /dev/null
+  then
+    echo Trying to install quodlibet.
+    pkg="$pkg quodlibet gstreamer1.0-plugins-bad libmodplug1"
+  fi
+
+  for cmd in gimp inkscape scribus libreoffice gnumeric
   do
     if ! command -v $cmd > /dev/null
     then
