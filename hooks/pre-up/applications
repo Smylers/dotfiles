@@ -90,6 +90,17 @@ then
   pkg="$pkg perl-doc"
 fi
 
+# Perl modules, used by commands in ~/bin/:
+for module in data-printer
+do
+  module=lib$module-perl
+  if [ ! -d /usr/share/doc/$module ]
+  then
+    echo Trying to install $module.
+    pkg="$pkg $module"
+  fi
+done
+
 # Install anything identiied by the above:
 if [ "$pkg" ]
 then
