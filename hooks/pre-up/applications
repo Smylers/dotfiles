@@ -83,6 +83,14 @@ then
   done
 fi
 
+# Perl documenation
+if ! perldoc -V &> /dev/null
+then
+  echo Trying to install perl-doc.
+  pkg="$pkg perl-doc"
+fi
+
+# Install anything identiied by the above:
 if [ "$pkg" ]
 then
   sudo nala install $pkg < /dev/tty
