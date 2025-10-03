@@ -16,7 +16,11 @@ fi
 # List of packages to install:
 pkg=""
 
-# Commands whose package name is identical to the command name:
+# Commands whose package name is identical to the command name; remove anything
+# under ~/ from $PATH before searching it, to avoid matching any of my wrapper
+# scripts, the existence of which doesn't indicate that the underlying command
+# they are wrapping has been installed:
+PATH=$(echo "$PATH" | tr : "\n" | grep -v ^$HOME | paste -sd :)
 for cmd in nvi plocate ncal units tig pgcli curl lynx zathura ffmpeg
 do
   if ! command -v $cmd > /dev/null
