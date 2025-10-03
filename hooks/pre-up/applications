@@ -21,7 +21,7 @@ pkg=""
 # scripts, the existence of which doesn't indicate that the underlying command
 # they are wrapping has been installed:
 PATH=$(echo "$PATH" | tr : "\n" | grep -v ^$HOME | paste -sd :)
-for cmd in nvi plocate ncal units tig pgcli curl lynx zathura ffmpeg
+for cmd in nvi plocate ncal units tig pgcli curl lynx zathura ffmpeg an
 do
   if ! command -v $cmd > /dev/null
   then
