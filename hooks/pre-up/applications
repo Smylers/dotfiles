@@ -42,6 +42,18 @@ then
   pkg="$pkg imagemagick"
 fi
 
+if ! command -v pdfjam > /dev/null
+then
+  echo Trying to install texlive-extra-utils.
+  pkg="$pkg texlive-extra-utils"
+fi
+
+if ! command -v imgsize > /dev/null
+then
+  echo Trying to install libimage-size-perl.
+  pkg="$pkg libimage-size-perl"
+fi
+
 if ! command -v /usr/bin/cpanm > /dev/null
 then
   echo Trying to install cpanminus.
