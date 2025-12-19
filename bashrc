@@ -974,6 +974,19 @@ function command_not_found_handle
 export -f command_not_found_handle
 
 
+# Only create this wrapper if running under Wayland. Do not export it, so that
+# it doesn't get triggered when ssh is invoked by other commands, such as git
+# (and indeed to avoid it becoming recursive in waypipe itself):
+if [ "$XDG_SESSION_TYPE" = wayland ]
+then
+  function ssh
+  # wrap ssh calls with waypipe, for forwarding graphical applications
+  {
+    waypipe ssh "$@"
+  }
+fi
+
+
 function aoc
 # sets up today's Advent of Code directory
 {
