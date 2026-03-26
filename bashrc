@@ -577,6 +577,29 @@ then
     echo '[screen is running]'
   fi
 
+  default_bindings=$(mktemp)
+  bind -p > $default_bindings
+  source /usr/share/doc/fzf/examples/key-bindings.bash
+
+  # Leave Ctrl+T and Alt+C alone:
+  bind -f $default_bindings
+  rm $default_bindings
+
+  # Use Alt+, for picking files:
+  bind -x '"\e,": "fzf-file-widget"'
+
+  # Complete after **. Debian moved the location of the file between versions; as
+  # message 30 on this bug points out, the new location doesn't actually help
+  # with anything: https://bugs.debian.org/973570
+  for f in /usr/share/{bash-completion/completions/fzf,doc/fzf/examples/completion.bash}
+  do
+    if [ -f $f ]
+    then
+      source $f
+      break
+    fi
+  done
+
 # In a non-interactive shell don't let auto_fork break expectations; reset the
 # flag in case this was invoked from an interactive shell further up:
 else
@@ -993,25 +1016,3 @@ function aoc
   cd "$(advent_of_code_dir)"
 }
 
-default_bindings=$(mktemp)
-bind -p > $default_bindings
-source /usr/share/doc/fzf/examples/key-bindings.bash
-
-# Leave Ctrl+T and Alt+C alone:
-bind -f $default_bindings
-rm $default_bindings
-
-# Use Alt+, for picking files:
-bind -x '"\e,": "fzf-file-widget"'
-
-# Complete after **. Debian moved the location of the file between versions; as
-# message 30 on this bug points out, the new location doesn't actually help
-# with anything: https://bugs.debian.org/973570
-for f in /usr/share/{bash-completion/completions/fzf,doc/fzf/examples/completion.bash}
-do
-  if [ -f $f ]
-  then
-    source $f
-    break
-  fi
-done
