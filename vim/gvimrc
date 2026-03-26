@@ -128,7 +128,7 @@ function s:MaybeLoadGitGutter()
     " update at the recommended frequency, make the window wider to allow for
     " the extra 2 columns, then load the package:
     set signcolumn=yes updatetime=100
-    let horz_windows = &columns / 80
+    let horz_windows = (&columns / 80) || 1
     let &columns = 82 * horz_windows + horz_windows - 1
     vert resize 82
 
