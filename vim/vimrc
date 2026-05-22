@@ -2,7 +2,9 @@
 " whenever an external keyboard is connected. But most of the time that I'm
 " using it is in Vim, so simply run it every time starting Vim, to ensure it
 " does what I want. :silent to avoid the ‘hit Enter’ prompt:
-silent !command -v setxkbmap > /dev/null && setxkbmap -option compose:caps
+if getenv('XDG_SESSION_TYPE') == 'x11'
+  silent !command -v setxkbmap > /dev/null && setxkbmap -option compose:caps
+endif
 
 " If editing a file which doesn't have a final line-break, leave it alone.
 " Useful for editing files which have been, say, created by a Windows user, or
