@@ -2,3 +2,5 @@ set default-bg              "#666666"
 set guioptions              ""
 set adjust-open             "width"
 set window-title-home-tilde true
+
+map <BackSpace> scroll full-up
