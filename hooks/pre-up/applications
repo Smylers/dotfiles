@@ -104,7 +104,7 @@ then
 fi
 
 # Perl modules, used by commands in ~/bin/:
-for module in data-printer
+for module in data-printer list-allutils
 do
   module=lib$module-perl
   if [ ! -d /usr/share/doc/$module ]
