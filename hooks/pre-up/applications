@@ -22,7 +22,7 @@ pkg=""
 # they are wrapping has been installed:
 PATH=$(echo "$PATH" | tr : "\n" | grep -v ^$HOME | paste -sd :)
 for cmd in \
-    waypipe nvi plocate ncal units tig pgcli curl lynx zathura ffmpeg an
+    waypipe nvi plocate ncal rename units tig pgcli curl lynx zathura ffmpeg an
 do
   if ! command -v $cmd > /dev/null
   then
