@@ -86,7 +86,7 @@ then
     pkg="$pkg quodlibet gstreamer1.0-plugins-bad libmodplug1"
   fi
 
-  for cmd in gimp inkscape scribus libreoffice gnumeric
+  for cmd in gimp inkscape scribus libreoffice gnumeric gpodder
   do
     if ! command -v $cmd > /dev/null
     then
